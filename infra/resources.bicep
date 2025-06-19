@@ -9,13 +9,13 @@ param tags object = {}
 
 var resourceToken = uniqueString(resourceGroup().id)
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: 'mi-${resourceToken}'
   location: location
   tags: tags
 }
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-04-01' = {
   name: replace('acr-${resourceToken}', '-', '')
   location: location
   sku: {
@@ -34,7 +34,7 @@ resource caeMiRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01
   }
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   name: 'law-${resourceToken}'
   location: location
   properties: {
@@ -45,7 +45,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
   tags: tags
 }
 
-resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-02-02-preview' = {
+resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-01-01' = {
   name: 'cae-${resourceToken}'
   location: location
   properties: {

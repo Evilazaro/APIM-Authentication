@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=./apimanagement.schema.json
+
+# Core API Management Properties
+sku:
+  name: Developer
+  capacity: 1
+
+# Publisher Information
+publisherEmail: admin@MngEnvMCAP341438.onmicrosoft.com
+publisherName: Contoso API Team
+
+# Managed Identity Configuration (recommended for secure access to resources)
+identity:
+  type: SystemAssigned

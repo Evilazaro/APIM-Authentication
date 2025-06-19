@@ -1,0 +1,79 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "version": "1.0.0",
+    "name": "apiManagement",
+    "title": "Azure API Management Configuration",
+    "description": "Schema for Azure API Management configuration",
+    "required": [
+        "sku",
+        "publisherEmail",
+        "publisherName"
+    ],
+    "properties": {
+        "sku": {
+            "type": "object",
+            "description": "The SKU configuration for the API Management service",
+            "required": [
+                "name",
+                "capacity"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the SKU. For production workloads, Premium is recommended for high availability and scale. Use Developer for non-production environments.",
+                    "enum": [
+                        "Developer",
+                        "Basic",
+                        "Standard",
+                        "Premium",
+                        "Consumption"
+                    ]
+                },
+                "capacity": {
+                    "type": "integer",
+                    "description": "The number of deployed units of the API Management service (not applicable for Consumption tier). For high availability in Premium tier, use at least 2 units.",
+                    "minimum": 1
+                }
+            }
+        },
+        "publisherEmail": {
+            "type": "string",
+            "description": "The email address of the API publisher",
+            "format": "email"
+        },
+        "publisherName": {
+            "type": "string",
+            "description": "The name of the API publisher"
+        },
+        "identity": {
+            "type": "object",
+            "description": "Managed identity configuration for the API Management service (recommended for secure access to Azure resources)",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "Type of managed identity to use. System-assigned is recommended for most scenarios.",
+                    "enum": [
+                        "None",
+                        "SystemAssigned",
+                        "UserAssigned",
+                        "SystemAssigned,UserAssigned"
+                    ]
+                },
+                "userAssignedIdentities": {
+                    "type": "object",
+                    "description": "Dictionary of user-assigned managed identities to be associated with the resource",
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                            "resourceId": {
+                                "type": "string",
+                                "description": "Resource ID of the user-assigned managed identity"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
