@@ -25,7 +25,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProductCatalog.API.AppHost")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ce3d4d96b4cd9dea721cf8d42f7ccc7f6798b73b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3680a43e008572ebda41f69156dabc62f3cff567")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProductCatalog.API.AppHost")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProductCatalog.API.AppHost")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
