@@ -72,10 +72,6 @@ app.UseSwaggerUI(c =>
     c.OAuthClientId(builder.Configuration["SwaggerUI:ClientId"]);
     c.OAuthUsePkce(); // Required for Authorization Code Flow (no secret)
     c.OAuthScopeSeparator(" ");
-    c.OAuthAdditionalQueryStringParams(new Dictionary<string, string>
-    {
-        { "response_type", "code" }
-    });
 });
 
 // HTTPS & Auth pipeline
