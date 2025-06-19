@@ -1,0 +1,10 @@
+{
+  "solution": {
+    "path": "ProductCatalog.API.sln",
+    "projects": [
+	"src\\ProductCatalog.API\\ProductCatalog.API.csproj",
+	"src\\ProductCatalog.API.AppHost\\ProductCatalog.API.AppHost.csproj",
+	"src\\ProductCatalog.API.ServiceDefaults\\ProductCatalog.API.ServiceDefaults.csproj"
+    ]
+  }
+}

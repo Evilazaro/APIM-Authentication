@@ -29,7 +29,7 @@ namespace ProductCatalog.API.Controllers
         public async Task<IEnumerable<WeatherForecast>> Get()
         {
             var user = await _graphServiceClient.Me.Request().GetAsync();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            return Enumerable.Range(1, 500).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 TemperatureC = Random.Shared.Next(-20, 55),
