@@ -1,4 +1,9 @@
 {
-  "dependencies": {},
+  "dependencies": {
+    "identityapp1": {
+      "restored": true,
+      "restoreTime": "2025-06-19T21:51:44.3981844Z"
+    }
+  },
   "parameters": {}
 }

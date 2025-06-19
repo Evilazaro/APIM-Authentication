@@ -17,13 +17,20 @@ var tags = {
   'azd-env-name': environmentName
 }
 
-resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
-  name: 'rg-${environmentName}'
+var solutionName = 'eShop'
+
+// Resource group to contain all solution resources
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: '${solutionName}-${environmentName}-${location}-rg'
   location: location
-  tags: tags
+  tags: {
+    Solution: solutionName
+    Environment: 'Production'
+    DeployedBy: 'Bicep'
+  }
 }
-module resources 'resources.bicep' = {
-  scope: rg
+module microservices 'resources.bicep' = {
+  scope: resourceGroup
   name: 'resources'
   params: {
     location: location
@@ -33,12 +40,32 @@ module resources 'resources.bicep' = {
 }
 
 
-output MANAGED_IDENTITY_CLIENT_ID string = resources.outputs.MANAGED_IDENTITY_CLIENT_ID
-output MANAGED_IDENTITY_NAME string = resources.outputs.MANAGED_IDENTITY_NAME
-output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = resources.outputs.AZURE_LOG_ANALYTICS_WORKSPACE_NAME
-output AZURE_CONTAINER_REGISTRY_ENDPOINT string = resources.outputs.AZURE_CONTAINER_REGISTRY_ENDPOINT
-output AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID string = resources.outputs.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID
-output AZURE_CONTAINER_REGISTRY_NAME string = resources.outputs.AZURE_CONTAINER_REGISTRY_NAME
-output AZURE_CONTAINER_APPS_ENVIRONMENT_NAME string = resources.outputs.AZURE_CONTAINER_APPS_ENVIRONMENT_NAME
-output AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = resources.outputs.AZURE_CONTAINER_APPS_ENVIRONMENT_ID
-output AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN string = resources.outputs.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN
+output MANAGED_IDENTITY_CLIENT_ID string = microservices.outputs.MANAGED_IDENTITY_CLIENT_ID
+output MANAGED_IDENTITY_NAME string = microservices.outputs.MANAGED_IDENTITY_NAME
+output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = microservices.outputs.AZURE_LOG_ANALYTICS_WORKSPACE_NAME
+output AZURE_CONTAINER_REGISTRY_ENDPOINT string = microservices.outputs.AZURE_CONTAINER_REGISTRY_ENDPOINT
+output AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID string = microservices.outputs.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID
+output AZURE_CONTAINER_REGISTRY_NAME string = microservices.outputs.AZURE_CONTAINER_REGISTRY_NAME
+output AZURE_CONTAINER_APPS_ENVIRONMENT_NAME string = microservices.outputs.AZURE_CONTAINER_APPS_ENVIRONMENT_NAME
+output AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = microservices.outputs.AZURE_CONTAINER_APPS_ENVIRONMENT_ID
+output AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN string = microservices.outputs.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN
+
+
+// Deploy API Management service using the module
+module apim 'azureAPIManagement/apiManagement.bicep' = {
+  scope: resourceGroup
+  name: 'apiManagementDeployment'
+  params: {
+    solutionName: solutionName
+    location: location
+  }
+}
+
+// Output the resource group name for reference
+@description('The name of the resource group containing all deployed resources')
+output AZURE_RESOURCE_GROUP_NAME string = resourceGroup.name
+
+// Output API Management deployment name
+@description('The name of the API Management deployment')
+output AZURE_APIM_NAME string = apim.outputs.AZURE_APIM_NAME
+
