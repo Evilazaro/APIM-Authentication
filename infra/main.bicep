@@ -12,39 +12,16 @@ targetScope = 'subscription'
 @minLength(1)
 @maxLength(64)
 @description('Name of the environment that can be used as part of naming resource convention')
-@metadata({
-  example: 'dev'
-  purpose: 'Used for resource naming and environment-specific configurations'
-  note: 'The resource group name will be constructed as: {solutionName}-{environmentName}-{location}-rg'
-})
 param environmentName string
 
 @minLength(1)
 @description('The Azure region where all resources will be deployed')
-@metadata({
-  example: 'eastus'
-  purpose: 'Primary location for all infrastructure components'
-  constraint: 'Must be a valid Azure region that supports all required services'
-})
 param location string
 
 @description('Principal ID of the user or service principal to assign application roles')
-@metadata({
-  example: '12345678-1234-1234-1234-123456789012'
-  purpose: 'Used for role-based access control assignments across deployed resources'
-  note: 'Leave empty if no specific principal needs access'
-})
 param principalId string = ''
 
 @description('Additional resource tags to be applied to all deployed resources')
-@metadata({
-  example: {
-    project: 'apim-auth'
-    owner: 'platform-team'
-    costCenter: '12345'
-  }
-  purpose: 'Additional tags for resource organization and cost tracking'
-})
 param additionalTags object = {}
 
 var solutionName = 'eShopApp'

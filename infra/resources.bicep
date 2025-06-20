@@ -20,14 +20,6 @@ param location string = resourceGroup().location
 param principalId string = ''
 
 @description('Resource tags to be applied to all deployed resources')
-@metadata({
-  example: {
-    environment: 'environmentName'
-    project: 'apim-auth'
-    owner: 'platform-team'
-    costCenter: '12345'
-  }
-})
 param tags object = {}
 
 @description('Environment name for resource naming (dev, test, prod)')

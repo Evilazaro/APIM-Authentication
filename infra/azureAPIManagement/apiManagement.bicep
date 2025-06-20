@@ -12,46 +12,15 @@ targetScope = 'resourceGroup'
 @description('API Management service name from configuration used as prefix for resource naming')
 @minLength(1)
 @maxLength(20)
-@metadata({
-  example: 'contoso-api'
-  purpose: 'Used as prefix for constructing the API Management service name'
-})
 param solutionName string
 
 @description('Azure region for the API Management service deployment')
-@metadata({
-  example: 'eastus'
-  purpose: 'Location where the API Management service will be deployed'
-})
 param location string = resourceGroup().location
 
 @description('Configuration settings loaded from YAML file containing SKU, publisher, and identity settings')
-@metadata({
-  purpose: 'Contains all API Management configuration including SKU, publisher information, and managed identity settings'
-  schema: 'Must include: sku.name, sku.capacity, publisherEmail, publisherName, identity.type'
-  example: {
-    sku: {
-      name: 'Developer'
-      capacity: 1
-    }
-    publisherEmail: 'admin@contoso.com'
-    publisherName: 'Contoso API Team'
-    identity: {
-      type: 'SystemAssigned'
-    }
-  }
-})
 param apimSettings object
 
 @description('Resource tags to be applied to the API Management service')
-@metadata({
-  example: {
-    environment: 'environmentName'
-    project: 'api-platform'
-    owner: 'platform-team'
-    costCenter: '12345'
-  }
-})
 param tags object = {}
 
 var resourceToken = uniqueString(resourceGroup().id)

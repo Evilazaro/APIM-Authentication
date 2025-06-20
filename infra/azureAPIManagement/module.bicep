@@ -12,37 +12,15 @@ targetScope = 'resourceGroup'
 @description('API Management service name from configuration used as prefix for resource naming')
 @minLength(1)
 @maxLength(20)
-@metadata({
-  example: 'contoso-api'
-  purpose: 'Used as prefix for constructing the API Management service name'
-  validation: 'Must be 1-20 characters, alphanumeric and hyphens only'
-})
 param solutionName string
 
 @description('Azure region for the API Management service deployment')
-@metadata({
-  example: 'eastus'
-  purpose: 'Location where the API Management service will be deployed'
-  note: 'Defaults to resource group location if not specified'
-})
 param location string = resourceGroup().location
 
 @description('Resource tags to be applied to all API Management resources')
-@metadata({
-  example: {
-    environment: 'environmentName'
-    project: 'api-platform'
-    owner: 'platform-team'
-    costCenter: '12345'
-  }
-  purpose: 'Tags for resource organization, cost tracking, and governance'
-})
 param tags object = {}
 
 @description('Environment name for resource configuration and naming')
-@metadata({
-  purpose: 'Used for environment-specific configurations and resource naming'
-})
 param environmentName string 
 
 @description('Configuration settings loaded from YAML file containing SKU, publisher, and identity settings')
