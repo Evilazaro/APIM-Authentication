@@ -31,7 +31,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 }
 module microservices 'resources.bicep' = {
   scope: rg
-  name: 'resources'
+  name: 'microservices'
   params: {
     location: location
     tags: tags
