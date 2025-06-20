@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-// ? Add Controllers
+// Add Controllers
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
