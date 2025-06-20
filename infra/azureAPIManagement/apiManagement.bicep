@@ -36,7 +36,7 @@ var commonTags = union(tags, {
 })
 
 @description('Azure API Management service instance with configuration from YAML settings')
-resource apiManagementInstance 'Microsoft.ApiManagement/service@2024-05-01' = {
+resource apiManagementInstance 'Microsoft.ApiManagement/service@2022-08-01' = {
   name: apimServiceName
   location: location
   tags: commonTags

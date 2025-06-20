@@ -2,7 +2,7 @@
 
 # Core API Management Properties
 sku:
-  name: Standard
+  name: Developer
   capacity: 1
 
 # Publisher Information
