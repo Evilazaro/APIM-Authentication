@@ -45,7 +45,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
   tags: tags
 }
 
-resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-01-01' = {
+resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' = {
   name: 'cae-${resourceToken}'
   location: location
   properties: {
