@@ -20,7 +20,7 @@ var tags = {
 var solutionName = 'eShop'
 
 // Resource group to contain all solution resources
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: '${solutionName}-${environmentName}-${location}-rg'
   location: location
   tags: {
@@ -30,7 +30,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   }
 }
 module microservices 'resources.bicep' = {
-  scope: resourceGroup
+  scope: rg
   name: 'resources'
   params: {
     location: location
@@ -52,18 +52,19 @@ output AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN string = microservices.ou
 
 
 // Deploy API Management service using the module
-module apim 'azureAPIManagement/apiManagement.bicep' = {
-  scope: resourceGroup
-  name: 'apiManagementDeployment'
+module apim 'azureAPIManagement/module.bicep'= {
+  scope: rg
   params: {
     solutionName: solutionName
-    location: location
   }
+  dependsOn: [
+    microservices
+  ]
 }
 
 // Output the resource group name for reference
 @description('The name of the resource group containing all deployed resources')
-output AZURE_RESOURCE_GROUP_NAME string = resourceGroup.name
+output AZURE_RESOURCE_GROUP_NAME string = rg.name
 
 // Output API Management deployment name
 @description('The name of the API Management deployment')

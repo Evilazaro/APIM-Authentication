@@ -13,7 +13,7 @@ param solutionName string
 param location string = resourceGroup().location
 
 @description('Configuration settings loaded from YAML file')
-var apimSettings = loadYamlContent('../settings/apimsettings.yaml')
+param apimSettings object
 
 @description('API Management service instance')
 resource apiManagementInstance 'Microsoft.ApiManagement/service@2024-05-01' = {
@@ -41,4 +41,10 @@ resource apiManagementInstance 'Microsoft.ApiManagement/service@2024-05-01' = {
 // Output the API Management service name for reference in other templates or scripts
 @description('The name of the deployed API Management instance')
 output AZURE_APIM_NAME string = apiManagementInstance.name
+
+// Output the API Management URL for accessing the service
+@description('The URL of the deployed API Management instance')
+output AZURE_APIM_URL string = apiManagementInstance.properties.gatewayUrl
+
+
 
