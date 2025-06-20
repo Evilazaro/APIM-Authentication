@@ -1,29 +1,14 @@
 //==============================================================================
 // BICEP TEMPLATE: Azure Resources for APIM Authentication
 //==============================================================================
-// Description: This template creates the foundational Azure resources required
-//             for the Product Catalog API with APIM authentication support
-// Author:     GitHub Copilot
-// Version:    1.0
-// Created:    June 2025
-//==============================================================================
 
-//==============================================================================
-// METADATA
-//==============================================================================
 metadata name = 'APIM Authentication Resources'
 metadata description = 'Creates managed identity, container registry, container apps environment, and log analytics workspace for APIM authentication scenario'
 metadata author = 'GitHub Copilot'
 metadata version = '1.0.0'
 
-//==============================================================================
-// TARGET SCOPE
-//==============================================================================
 targetScope = 'resourceGroup'
 
-//==============================================================================
-// PARAMETERS
-//==============================================================================
 @description('The Azure region where all resources will be deployed')
 param location string = resourceGroup().location
 
@@ -67,13 +52,8 @@ param logAnalyticsSkuName string = 'PerGB2018'
 @maxValue(730)
 param logAnalyticsRetentionDays int = 30
 
-//==============================================================================
-// VARIABLES
-//==============================================================================
-// Generate unique resource token for naming consistency
 var resourceToken = toLower(uniqueString(resourceGroup().id, location, environment))
 
-// Resource naming conventions
 var namingConvention = {
   managedIdentity: 'mi-${projectName}-${environment}-${resourceToken}'
   containerRegistry: replace('acr${projectName}${environment}${resourceToken}', '-', '')
@@ -81,14 +61,12 @@ var namingConvention = {
   containerAppEnvironment: 'cae-${projectName}-${environment}-${resourceToken}'
 }
 
-// Role definition IDs for Azure RBAC
 var roleDefinitions = {
   acrPull: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
   contributor: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
   reader: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 }
 
-// Common tags to be merged with user-provided tags
 var commonTags = union(tags, {
   'deployment-method': 'bicep'
   'resource-group': resourceGroup().name
@@ -97,13 +75,6 @@ var commonTags = union(tags, {
   project: projectName
 })
 
-//==============================================================================
-// RESOURCES
-//==============================================================================
-
-//------------------------------------------------------------------------------
-// Managed Identity
-//------------------------------------------------------------------------------
 @description('User-assigned managed identity for secure authentication across Azure services')
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: namingConvention.managedIdentity
@@ -114,9 +85,6 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   })
 }
 
-//------------------------------------------------------------------------------
-// Container Registry
-//------------------------------------------------------------------------------
 @description('Azure Container Registry for storing container images')
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-04-01' = {
   name: namingConvention.containerRegistry
@@ -152,9 +120,6 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-04-01' =
   })
 }
 
-//------------------------------------------------------------------------------
-// Role Assignment: Managed Identity -> Container Registry (AcrPull)
-//------------------------------------------------------------------------------
 @description('Role assignment granting the managed identity AcrPull access to the container registry')
 resource managedIdentityAcrPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(containerRegistry.id, managedIdentity.id, roleDefinitions.acrPull)
@@ -167,9 +132,6 @@ resource managedIdentityAcrPullRoleAssignment 'Microsoft.Authorization/roleAssig
   }
 }
 
-//------------------------------------------------------------------------------
-// Log Analytics Workspace  
-//------------------------------------------------------------------------------
 @description('Log Analytics Workspace for centralized logging and monitoring')
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   name: namingConvention.logAnalyticsWorkspace
@@ -196,9 +158,6 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
   })
 }
 
-//------------------------------------------------------------------------------
-// Container Apps Environment
-//------------------------------------------------------------------------------
 @description('Container Apps Environment with integrated monitoring and Aspire Dashboard')
 resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' = {
   name: namingConvention.containerAppEnvironment
@@ -224,9 +183,6 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
     purpose: 'Hosting environment for containerized APIM authentication services'
   })
 
-  //----------------------------------------------------------------------------
-  // Aspire Dashboard Component
-  //----------------------------------------------------------------------------
   resource aspireDashboard 'dotNetComponents@2025-02-02-preview' = {
     name: 'aspire-dashboard'
     properties: {
@@ -241,9 +197,6 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
   }
 }
 
-//------------------------------------------------------------------------------
-// Role Assignment: Principal -> Resource Group (if principalId provided)
-//------------------------------------------------------------------------------
 @description('Optional role assignment for provided principal ID')
 resource principalRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(principalId)) {
   name: guid(resourceGroup().id, principalId, roleDefinitions.contributor)
@@ -255,13 +208,6 @@ resource principalRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-0
   }
 }
 
-//==============================================================================
-// OUTPUTS
-//==============================================================================
-
-//------------------------------------------------------------------------------
-// Managed Identity Outputs
-//------------------------------------------------------------------------------
 @description('Client ID of the user-assigned managed identity')
 output MANAGED_IDENTITY_CLIENT_ID string = managedIdentity.properties.clientId
 
@@ -271,18 +217,12 @@ output MANAGED_IDENTITY_NAME string = managedIdentity.name
 @description('Principal ID of the user-assigned managed identity')
 output MANAGED_IDENTITY_PRINCIPAL_ID string = managedIdentity.properties.principalId
 
-//------------------------------------------------------------------------------
-// Log Analytics Workspace Outputs
-//------------------------------------------------------------------------------
 @description('Name of the Log Analytics Workspace')
 output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = logAnalyticsWorkspace.name
 
 @description('Resource ID of the Log Analytics Workspace')
 output AZURE_LOG_ANALYTICS_WORKSPACE_ID string = logAnalyticsWorkspace.id
 
-//------------------------------------------------------------------------------
-// Container Registry Outputs
-//------------------------------------------------------------------------------
 @description('Login server URL for the Azure Container Registry')
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.properties.loginServer
 
@@ -292,9 +232,6 @@ output AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID string = managedIdentity.id
 @description('Name of the Azure Container Registry')
 output AZURE_CONTAINER_REGISTRY_NAME string = containerRegistry.name
 
-//------------------------------------------------------------------------------
-// Container Apps Environment Outputs
-//------------------------------------------------------------------------------
 @description('Name of the Container Apps Environment')
 output AZURE_CONTAINER_APPS_ENVIRONMENT_NAME string = containerAppEnvironment.name
 

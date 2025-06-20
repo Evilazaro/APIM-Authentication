@@ -1,29 +1,13 @@
 //==============================================================================
 // BICEP MODULE: Azure API Management Service Module
 //==============================================================================
-// Description: This module orchestrates the deployment of Azure API Management 
-//             service by loading configuration from YAML and calling the main template
-// Author:     GitHub Copilot
-// Version:    1.0
-// Created:    June 2025
-//==============================================================================
 
-//==============================================================================
-// METADATA
-//==============================================================================
 metadata name = 'Azure API Management Module'
 metadata description = 'Module that loads YAML configuration and deploys API Management service'
 metadata author = 'GitHub Copilot'
 metadata version = '1.0.0'
 
-//==============================================================================
-// TARGET SCOPE
-//==============================================================================
 targetScope = 'resourceGroup'
-
-//==============================================================================
-// PARAMETERS
-//==============================================================================
 
 @description('API Management service name from configuration used as prefix for resource naming')
 @minLength(1)
@@ -62,19 +46,12 @@ param tags object = {}
 })
 param environment string = 'dev'
 
-//==============================================================================
-// VARIABLES
-//==============================================================================
-
-// Load API Management configuration from YAML settings file
 @description('Configuration settings loaded from YAML file containing SKU, publisher, and identity settings')
 var apimSettings = loadYamlContent('../settings/apimsettings.yaml')
 
-// Generate deployment name with timestamp for uniqueness
 param deploymentTimestamp string = utcNow('yyyyMMdd-HHmmss')
 var moduleDeploymentName = 'apim-deployment-${deploymentTimestamp}'
 
-// Common tags to be passed to child resources
 var commonTags = union(tags, {
   'deployment-method': 'bicep-module'
   'module-name': 'api-management-module'
@@ -83,44 +60,24 @@ var commonTags = union(tags, {
   'last-deployed': deploymentTimestamp
 })
 
-//==============================================================================
-// MODULES
-//==============================================================================
-
-//------------------------------------------------------------------------------
-// API Management Service Module
-//------------------------------------------------------------------------------
 @description('Deploy Azure API Management service using loaded YAML configuration')
 module apiManagementInstance 'apiManagement.bicep' = {
   name: moduleDeploymentName
   scope: resourceGroup()
   params: {
-    // Core configuration parameters
     apimSettings: apimSettings
     solutionName: solutionName
     location: location
-    
-    // Additional parameters for enhanced functionality
     tags: commonTags
   }
 }
 
-//==============================================================================
-// OUTPUTS
-//==============================================================================
-
-//------------------------------------------------------------------------------
-// Primary Outputs (Original Names Preserved)
-//------------------------------------------------------------------------------
 @description('The name of the deployed API Management instance')
 output AZURE_APIM_NAME string = apiManagementInstance.outputs.AZURE_APIM_NAME
 
 @description('The gateway URL of the deployed API Management instance')
 output AZURE_APIM_URL string = apiManagementInstance.outputs.AZURE_APIM_URL
 
-//------------------------------------------------------------------------------
-// Additional Outputs for Integration and Reference
-//------------------------------------------------------------------------------
 @description('Resource ID of the deployed API Management service')
 output apimResourceId string = apiManagementInstance.outputs.apimResourceId
 
@@ -147,5 +104,3 @@ output deploymentEnvironment string = environment
 
 @description('Tags applied to the API Management resources')
 output appliedTags object = commonTags
-
-
