@@ -30,7 +30,7 @@ param location string = resourceGroup().location
 @description('Resource tags to be applied to all API Management resources')
 @metadata({
   example: {
-    environment: 'dev'
+    environment: 'environmentName'
     project: 'api-platform'
     owner: 'platform-team'
     costCenter: '12345'
@@ -40,11 +40,10 @@ param location string = resourceGroup().location
 param tags object = {}
 
 @description('Environment name for resource configuration and naming')
-@allowed(['dev', 'test', 'staging', 'prod'])
 @metadata({
   purpose: 'Used for environment-specific configurations and resource naming'
 })
-param environment string = 'dev'
+param environmentName string 
 
 @description('Configuration settings loaded from YAML file containing SKU, publisher, and identity settings')
 var apimSettings = loadYamlContent('../settings/apimsettings.yaml')
@@ -56,7 +55,7 @@ var commonTags = union(tags, {
   'deployment-method': 'bicep-module'
   'module-name': 'api-management-module'
   'solution-name': solutionName
-  environment: environment
+  environment: environmentName
   'last-deployed': deploymentTimestamp
 })
 
@@ -100,7 +99,7 @@ output apimPublicIpAddresses array = apiManagementInstance.outputs.apimPublicIpA
 output loadedConfiguration object = apimSettings
 
 @description('Environment configuration used for deployment')
-output deploymentEnvironment string = environment
+output deploymentEnvironment string = environmentName
 
 @description('Tags applied to the API Management resources')
 output appliedTags object = commonTags

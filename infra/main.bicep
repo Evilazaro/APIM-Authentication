@@ -60,7 +60,7 @@ var baseTags = {
 
 var resourceGroupTags = union(baseTags, additionalTags, {
   Solution: solutionName
-  Environment: environmentName
+  environment: environmentName
   DeployedBy: 'Bicep'
   'resource-type': 'resource-group'
 })
@@ -87,6 +87,7 @@ module microservices 'resources.bicep' = {
     location: location
     tags: moduleBaseTags
     principalId: principalId
+    environmentName: environmentName
   }
 }
 
@@ -98,7 +99,7 @@ module apim 'azureAPIManagement/module.bicep' = {
     solutionName: solutionName
     location: location
     tags: moduleBaseTags
-    environment: environmentName
+    environmentName: environmentName
   }
   dependsOn: [
     microservices

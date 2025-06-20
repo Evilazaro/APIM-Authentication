@@ -22,7 +22,7 @@ param principalId string = ''
 @description('Resource tags to be applied to all deployed resources')
 @metadata({
   example: {
-    environment: 'dev'
+    environment: 'environmentName'
     project: 'apim-auth'
     owner: 'platform-team'
     costCenter: '12345'
@@ -31,8 +31,7 @@ param principalId string = ''
 param tags object = {}
 
 @description('Environment name for resource naming (dev, test, prod)')
-@allowed(['dev', 'test', 'staging', 'prod'])
-param environment string = 'dev'
+param environmentName string 
 
 @description('Project name for resource naming')
 @minLength(2)
@@ -52,13 +51,13 @@ param logAnalyticsSkuName string = 'PerGB2018'
 @maxValue(730)
 param logAnalyticsRetentionDays int = 30
 
-var resourceToken = toLower(uniqueString(resourceGroup().id, location, environment))
+var resourceToken = toLower(uniqueString(resourceGroup().id, location, environmentName))
 
 var namingConvention = {
-  managedIdentity: 'mi-${projectName}-${environment}-${resourceToken}'
-  containerRegistry: replace('acr${projectName}${environment}${resourceToken}', '-', '')
-  logAnalyticsWorkspace: 'law-${projectName}-${environment}-${resourceToken}'
-  containerAppEnvironment: 'cae-${projectName}-${environment}-${resourceToken}'
+  managedIdentity: 'mi-${projectName}-${environmentName}-${resourceToken}'
+  containerRegistry: replace('acr${projectName}${environmentName}${resourceToken}', '-', '')
+  logAnalyticsWorkspace: 'law-${projectName}-${environmentName}-${resourceToken}'
+  containerAppEnvironment: 'cae-${projectName}-${environmentName}-${resourceToken}'
 }
 
 var roleDefinitions = {
@@ -71,7 +70,7 @@ var commonTags = union(tags, {
   'deployment-method': 'bicep'
   'resource-group': resourceGroup().name
   'subscription-id': subscription().subscriptionId
-  environment: environment
+  environment: environmentName
   project: projectName
 })
 

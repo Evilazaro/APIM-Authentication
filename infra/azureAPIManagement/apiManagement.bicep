@@ -46,7 +46,7 @@ param apimSettings object
 @description('Resource tags to be applied to the API Management service')
 @metadata({
   example: {
-    environment: 'dev'
+    environment: 'environmentName'
     project: 'api-platform'
     owner: 'platform-team'
     costCenter: '12345'
