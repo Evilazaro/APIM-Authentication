@@ -18,18 +18,6 @@ module apiManagementInstance 'apiManagement.bicep' = {
   }
 }
 
-@description('Product Catalog API resource')
-module productCatalogApi 'api.bicep' = {
-  name: 'productCatalogApi'
-  params: {
-    apiManagementName: apiManagementInstance.name
-    apiLink: apiManagementInstance.outputs.AZURE_APIM_URL // Link to the OpenAPI specification for the Product Catalog API
-  }
-  dependsOn: [
-    apiManagementInstance
-  ]
-}
-
 @description('The name of the deployed API Management instance')
 output AZURE_APIM_NAME string = apiManagementInstance.name
 
