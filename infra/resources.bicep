@@ -56,7 +56,7 @@ param projectName string = 'apim'
 
 @description('Container Registry SKU')
 @allowed(['Basic', 'Standard', 'Premium'])
-param containerRegistrySku string = 'Basic'
+param containerRegistrySku string = 'Premium'
 
 @description('Log Analytics Workspace pricing tier')
 @allowed(['Free', 'PerNode', 'PerGB2018', 'Standalone', 'Standard', 'Premium'])
@@ -105,7 +105,7 @@ var commonTags = union(tags, {
 // Managed Identity
 //------------------------------------------------------------------------------
 @description('User-assigned managed identity for secure authentication across Azure services')
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: namingConvention.managedIdentity
   location: location
   tags: union(commonTags, {
@@ -118,7 +118,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
 // Container Registry
 //------------------------------------------------------------------------------
 @description('Azure Container Registry for storing container images')
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-04-01' = {
   name: namingConvention.containerRegistry
   location: location
   sku: {
@@ -157,20 +157,13 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-07-01' =
 //------------------------------------------------------------------------------
 @description('Role assignment granting the managed identity AcrPull access to the container registry')
 resource managedIdentityAcrPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(
-    containerRegistry.id,
-    managedIdentity.id,
-    roleDefinitions.acrPull
-  )
+  name: guid(containerRegistry.id, managedIdentity.id, roleDefinitions.acrPull)
   scope: containerRegistry
   properties: {
     description: 'Grants AcrPull permissions to the managed identity for container image pulls'
     principalId: managedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      roleDefinitions.acrPull
-    )
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.acrPull)
   }
 }
 
@@ -178,7 +171,7 @@ resource managedIdentityAcrPullRoleAssignment 'Microsoft.Authorization/roleAssig
 // Log Analytics Workspace  
 //------------------------------------------------------------------------------
 @description('Log Analytics Workspace for centralized logging and monitoring')
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   name: namingConvention.logAnalyticsWorkspace
   location: location
   properties: {
@@ -207,7 +200,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
 // Container Apps Environment
 //------------------------------------------------------------------------------
 @description('Container Apps Environment with integrated monitoring and Aspire Dashboard')
-resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' = {
+resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' = {
   name: namingConvention.containerAppEnvironment
   location: location
   properties: {
@@ -234,7 +227,7 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' 
   //----------------------------------------------------------------------------
   // Aspire Dashboard Component
   //----------------------------------------------------------------------------
-  resource aspireDashboard 'dotNetComponents@2024-03-01' = {
+  resource aspireDashboard 'dotNetComponents@2025-02-02-preview' = {
     name: 'aspire-dashboard'
     properties: {
       componentType: 'AspireDashboard'
@@ -253,23 +246,14 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' 
 //------------------------------------------------------------------------------
 @description('Optional role assignment for provided principal ID')
 resource principalRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(principalId)) {
-  name: guid(
-    resourceGroup().id,
-    principalId,
-    roleDefinitions.contributor
-  )
+  name: guid(resourceGroup().id, principalId, roleDefinitions.contributor)
   properties: {
     description: 'Grants Contributor access to the specified principal for resource management'
     principalId: principalId
     principalType: 'User'
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      roleDefinitions.contributor
-    )
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.contributor)
   }
 }
-
-
 
 //==============================================================================
 // OUTPUTS
@@ -319,4 +303,3 @@ output AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = containerAppEnvironment.id
 
 @description('Default domain of the Container Apps Environment')
 output AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN string = containerAppEnvironment.properties.defaultDomain
-

@@ -108,7 +108,7 @@ var apimDeploymentName = 'apiManagement-${uniqueString(deployment().name, enviro
 // Resource Group
 //------------------------------------------------------------------------------
 @description('Resource group to contain all solution resources')
-resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: location
   tags: resourceGroupTags
@@ -227,7 +227,3 @@ output deploymentTimestamp string = deploymentTimestamp
 
 @description('Resource group ID for reference in other deployments')
 output resourceGroupId string = rg.id
-
-//==============================================================================
-// END OF TEMPLATE
-//==============================================================================

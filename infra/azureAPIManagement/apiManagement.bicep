@@ -90,7 +90,6 @@ var commonTags = union(tags, {
   'deployment-method': 'bicep'
 })
 
-
 //==============================================================================
 // RESOURCES
 //==============================================================================
@@ -118,20 +117,7 @@ resource apiManagementInstance 'Microsoft.ApiManagement/service@2024-05-01' = {
   // Core API Management service properties
   properties: {
     publisherEmail: apimSettings.publisherEmail // Required: Contact email for the API publisher
-    publisherName: apimSettings.publisherName   // Required: Name of the API publisher organization
-    
-    // Security configuration - disable legacy protocols for enhanced security
-    customProperties: {
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168': 'False'
-    }
-    
-    // API version constraint to ensure modern API versions
-    apiVersionConstraint: {
-      minApiVersion: '2019-01-01'
-    }
+    publisherName: apimSettings.publisherName // Required: Name of the API publisher organization
   }
 }
 
@@ -161,11 +147,12 @@ output apimManagementUrl string = apiManagementInstance.properties.managementApi
 output apimDeveloperPortalUrl string = apiManagementInstance.properties.developerPortalUrl
 
 @description('System-assigned managed identity principal ID (if enabled)')
-output apimPrincipalId string = contains(apimSettings.identity.type, 'SystemAssigned') ? apiManagementInstance.identity.principalId : ''
+output apimPrincipalId string = contains(apimSettings.identity.type, 'SystemAssigned')
+  ? apiManagementInstance.identity.principalId
+  : ''
 
 @description('API Management service provisioning state')
 output apimProvisioningState string = apiManagementInstance.properties.provisioningState
 
 @description('Public IP addresses assigned to the API Management service')
 output apimPublicIpAddresses array = apiManagementInstance.properties.publicIPAddresses
-
