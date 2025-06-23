@@ -12,21 +12,20 @@ param location string
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
+var solutionName string = 'eShopApp'
 
 var tags = {
   'azd-env-name': environmentName
 }
 
-var solutionName = 'eShopApp'
-
-resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: '${solutionName}-${environmentName}-${location}-rg'
   location: location
   tags: tags
 }
 module resources 'resources.bicep' = {
   scope: rg
-  name: 'microservices'
+  name: 'resources'
   params: {
     location: location
     tags: tags
@@ -34,15 +33,6 @@ module resources 'resources.bicep' = {
   }
 }
 
-
-module apiManagement 'azureAPIManagement/module.bicep'= {
-  scope: rg
-  name: 'apiManagement'
-  params: {
-    environmentName: environmentName
-    solutionName: solutionName
-  }
-}
 
 output MANAGED_IDENTITY_CLIENT_ID string = resources.outputs.MANAGED_IDENTITY_CLIENT_ID
 output MANAGED_IDENTITY_NAME string = resources.outputs.MANAGED_IDENTITY_NAME
