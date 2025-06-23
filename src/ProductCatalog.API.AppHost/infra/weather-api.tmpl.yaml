@@ -13,7 +13,7 @@ properties:
       dotnet:
         autoConfigureDataProtection: true
     ingress:
-      external: true
+      external: false
       targetPort: {{ targetPortOrDefault 8080 }}
       transport: http
       allowInsecure: true
@@ -23,7 +23,7 @@ properties:
   template:
     containers:
       - image: {{ .Image }}
-        name: productcatalog-api
+        name: weather-api
         env:
           - name: AZURE_CLIENT_ID
             value: {{ .Env.MANAGED_IDENTITY_CLIENT_ID }}
@@ -38,7 +38,7 @@ properties:
           - name: OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY
             value: in_memory
     scale:
-      minReplicas: 5
+      minReplicas: 1
 tags:
-  azd-service-name: productcatalog-api
-  aspire-resource-name: productcatalog-api
+  azd-service-name: weather-api
+  aspire-resource-name: weather-api

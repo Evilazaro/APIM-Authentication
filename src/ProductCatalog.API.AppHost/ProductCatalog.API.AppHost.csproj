@@ -8,15 +8,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsAspireHost>true</IsAspireHost>
-    <UserSecretsId>a22528e1-5051-4b10-b148-844944d64c68</UserSecretsId>
+    <UserSecretsId>e49ba0ef-3b1f-4c15-80ae-71593e935daa</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.1" />
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProductCatalog.API\ProductCatalog.API.csproj" />
+    <ProjectReference Include="..\Weather.API\Weather.API.csproj" />
   </ItemGroup>
 
 </Project>
