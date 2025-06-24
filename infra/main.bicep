@@ -25,11 +25,20 @@ resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 }
 module resources 'resources.bicep' = {
   scope: rg
-  name: 'resources'
+  name: 'microservices'
   params: {
     location: location
     tags: tags
     principalId: principalId
+  }
+}
+
+module apiM 'azureAPIManagement/module.bicep' = {
+  scope: rg
+  name: 'apiManagement'
+  params: {
+    environmentName: environmentName
+    solutionName: solutionName
   }
 }
 

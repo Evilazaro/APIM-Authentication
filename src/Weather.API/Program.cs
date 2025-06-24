@@ -2,45 +2,27 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Habilita logs detalhados (dev only)
+// Enable detailed identity logs (dev only)
 IdentityModelEventSource.ShowPII = true;
 
-// Configuração via appsettings.json
-var azureAdConfig = builder.Configuration.GetSection("AzureAd");
-var validAudience = azureAdConfig["Audience"] ?? azureAdConfig["ClientId"];
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
+    //.AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(options =>
-    {
-        azureAdConfig.Bind(options);
 
-        // Validação explícita do audience
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateAudience = true,
-            ValidAudience = validAudience,
-            ValidateIssuer = true
-        };
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-        // Log de falha de autenticação
-        options.Events = new JwtBearerEvents
-        {
-            OnAuthenticationFailed = context =>
-            {
-                Console.WriteLine($"Invalid Token: {context.Exception.Message}");
-                return Task.CompletedTask;
-            }
-        };
-    },
-    options => azureAdConfig.Bind(options));
-
+// Add auth and controllers
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
-builder.AddServiceDefaults(); // Suporte para Service Discovery, Health Checks etc.
+
+// Optional: Service discovery or health checks
+builder.AddServiceDefaults();
 
 var app = builder.Build();
 
@@ -50,5 +32,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapDefaultEndpoints();
+
+// Swagger UI setup
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.Run();
