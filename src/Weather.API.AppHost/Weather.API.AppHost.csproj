@@ -8,7 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsAspireHost>true</IsAspireHost>
-    <UserSecretsId>a22528e1-5051-4b10-b148-844944d64c68</UserSecretsId>
+    <UserSecretsId>2bd0b1a0-2d59-49f3-b1a1-1dfabb6b2260</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProductCatalog.API\ProductCatalog.API.csproj" />
+    <ProjectReference Include="..\Weather.API\Weather.API.csproj" />
   </ItemGroup>
 
 </Project>

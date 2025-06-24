@@ -1,5 +1,5 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-builder.AddProject<Projects.ProductCatalog_API>("productcatalog-api");
+builder.AddProject<Projects.Weather_API>("weather-api");
 
 builder.Build().Run();

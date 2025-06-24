@@ -4,5 +4,5 @@ name: apim-authentication
 services:  
   app:
     language: dotnet
-    project: ./src/ProductCatalog.API.AppHost/ProductCatalog.API.AppHost.csproj
+    project: ./src/Weather.API.AppHost/Weather.API.AppHost.csproj
     host: containerapp

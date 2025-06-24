@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "identityapp1": {
-      "connectionInfo": "App registration: backend-app, Tenant: evalvesd (evalvesd.onmicrosoft.com - Microsoft Entra ID)",
+      "connectionInfo": "App registration: weatherBackEnd-API, Tenant: Contoso (MngEnvMCAP341438.onmicrosoft.com - Microsoft Entra ID)",
       "secretStore": "LocalSecretsFile",
       "type": "identityapp.secretStore",
       "connectionId": "AzureAD:ClientSecret"

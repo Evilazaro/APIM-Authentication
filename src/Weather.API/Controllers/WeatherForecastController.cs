@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web.Resource;
 using Microsoft.Graph;
 
-namespace ProductCatalog.API.Controllers
+namespace Weather.API.Controllers
 {
-    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -19,16 +17,14 @@ namespace ProductCatalog.API.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, GraphServiceClient graphServiceClient)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
             _logger = logger;
-            _graphServiceClient = graphServiceClient;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
         public async Task<IEnumerable<WeatherForecast>> Get()
         {
-            var user = await _graphServiceClient.Me.Request().GetAsync();
             return Enumerable.Range(1, 500).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -38,4 +34,14 @@ namespace ProductCatalog.API.Controllers
             .ToArray();
         }
     }
+
+    [ApiController]
+    [Route("api/test")]
+    public class TestController : ControllerBase
+    {
+        [HttpGet]
+        [Authorize]
+        public IActionResult Get() => Ok("Token is valid and authorized.");
+    }
+
 }
